@@ -580,7 +580,7 @@
   <div class="game-header">
     <div class="header-eyebrow">스승의 날 특별판</div>
     <h1 class="header-title">선생님이 되어보는 하루</h1>
-    <p class="header-sub">초등학교 4학년 2반 담임선생님으로 하루를 보내보세요</p>
+    <p class="header-sub">초등학교 5학년 2반 담임선생님으로 하루를 보내보세요</p>
   </div>
 
   <div id="intro-section">
@@ -670,9 +670,9 @@ const timeline_slots = [
   { time: '10:50', label: '쉬는 시간', icon: '🏃' },
   { time: '11:10', label: '3·4교시', icon: '📐' },
   { time: '12:30', label: '점심 시간', icon: '🍱' },
-  { time: '13:30', label: '5교시', icon: '🖥️' },
-  { time: '14:30', label: '방과 후', icon: '🌇' },
-  { time: '16:00', label: '마무리', icon: '✏️' },
+  { time: '14:30', label: '방과후', icon: '🖥️' },
+  { time: '16:00', label: '교직원 회의', icon: '🌇' },
+  { time: '16:30', label: '마무리', icon: '✏️' },
 ];
 
 // ── SCENES DEFINITION ──
@@ -928,7 +928,7 @@ const scenes = [
         effectTypes: ['up', 'up', 'neutral'],
       },
     ],
-    nextLabel: '5교시 수업으로 →',
+    nextLabel: '방과후로 →',
     nextColor: 'blue-btn',
     timelineIndex: 5,
     tasksDone: ['학부모 상담'],
@@ -936,7 +936,7 @@ const scenes = [
 
   // SCENE 6: 학생 하교 이후 업무 우선순위
   {
-    phase: '오후 2시 30분 — 5교시',
+    phase: '오후 2시 30분 — 방과후',
     phaseColor: 'blue',
     theme: 'blue-theme',
     title: '연수 vs 생기부 마감 vs 출장 준비',
