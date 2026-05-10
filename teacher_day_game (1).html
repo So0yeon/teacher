@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>선생님이 되어보는 하루 — 스승의 날 특별판</title>
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #FFF9F0;
+    --paper: #FFFCF5;
+    --ink: #2C1A0E;
+    --ink-soft: #5C4033;
+    --accent: #C8440A;
+    --accent-warm: #E8891A;
+    --accent-pale: #FDE8D0;
+    --green: #2D6A4F;
+    --green-pale: #D8F3DC;
+    --blue: #1A3A5C;
+    --blue-pale: #DAE8F5;
+    --gold: #B8860B;
+    --gold-pale: #FFF3CC;
+    --border: rgba(44,26,14,0.12);
+    --shadow: 0 2px 16px rgba(44,26,14,0.10);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  #game-container {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 16px 80px;
+  }
+
+  /* ── HEADER ── */
+  .game-header {
+    text-align: center;
+    padding: 36px 0 24px;
+    position: relative;
+  }
+  .game-header::after {
+    content: '';
+    display: block;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    margin-top: 20px;
+  }
+  .header-eyebrow {
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--accent);
+    font-weight: 500;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .header-title {
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--ink);
+    line-height: 1.3;
+  }
+  .header-sub {
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin-top: 8px;
+    line-height: 1.6;
+  }
+
+  /* ── STATUS BAR ── */
+  .status-bar {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin: 20px 0;
+    padding: 14px 16px;
+    background: var(--paper);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+  }
+  .stat-item {
+    text-align: center;
+  }
+  .stat-label {
+    font-size: 10px;
+    color: var(--ink-soft);
+    letter-spacing: 1px;
+    display: block;
+    margin-bottom: 4px;
+  }
+  .stat-value {
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .stat-bar-wrap {
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    margin-top: 5px;
+    overflow: hidden;
+  }
+  .stat-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.6s ease;
+  }
+  .fill-energy { background: var(--accent); }
+  .fill-student { background: var(--green); }
+  .fill-parent { background: var(--blue); }
+  .fill-admin { background: var(--gold); }
+
+  /* ── TIMELINE ── */
+  .timeline {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin: 16px 0;
+    padding: 12px 16px;
+    background: var(--paper);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow-x: auto;
+  }
+  .time-block {
+    flex: 1;
+    min-width: 60px;
+    text-align: center;
+    padding: 4px 2px;
+    font-size: 10px;
+    color: var(--ink-soft);
+    position: relative;
+    border-right: 1px solid var(--border);
+    transition: all 0.3s;
+  }
+  .time-block:last-child { border-right: none; }
+  .time-block.done { color: var(--accent); font-weight: 500; }
+  .time-block.active {
+    background: var(--accent-pale);
+    color: var(--accent);
+    font-weight: 700;
+    border-radius: 6px;
+    box-shadow: 0 0 0 2px var(--accent);
+  }
+  .time-block .time-icon { font-size: 14px; display: block; margin-bottom: 2px; }
+
+  /* ── SCENE CARD ── */
+  .scene-card {
+    background: var(--paper);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    padding: 28px 28px 24px;
+    margin: 16px 0;
+    animation: slideUp 0.4s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .scene-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: var(--accent);
+  }
+  .scene-card.green-theme::before { background: var(--green); }
+  .scene-card.blue-theme::before { background: var(--blue); }
+  .scene-card.gold-theme::before { background: var(--gold); }
+
+  .scene-phase {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--accent);
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .scene-phase.green { color: var(--green); }
+  .scene-phase.blue { color: var(--blue); }
+  .scene-phase.gold { color: var(--gold); }
+
+  .scene-title {
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 14px;
+    line-height: 1.4;
+  }
+
+  .scene-illustration {
+    font-size: 52px;
+    text-align: center;
+    margin: 10px 0 16px;
+    display: block;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+  }
+
+  .scene-body {
+    font-size: 14px;
+    line-height: 1.85;
+    color: var(--ink-soft);
+    margin-bottom: 18px;
+    border-left: 3px solid var(--accent-pale);
+    padding-left: 14px;
+  }
+  .scene-body.green-border { border-left-color: var(--green-pale); }
+  .scene-body.blue-border { border-left-color: var(--blue-pale); }
+  .scene-body.gold-border { border-left-color: var(--gold-pale); }
+
+  .dilemma-box {
+    background: var(--accent-pale);
+    border: 1px solid rgba(200,68,10,0.2);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin: 14px 0;
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--ink);
+  }
+  .dilemma-box.green { background: var(--green-pale); border-color: rgba(45,106,79,0.2); }
+  .dilemma-box.blue { background: var(--blue-pale); border-color: rgba(26,58,92,0.2); }
+  .dilemma-box.gold { background: var(--gold-pale); border-color: rgba(184,134,11,0.2); }
+
+  .dilemma-label {
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    display: block;
+    color: var(--accent);
+  }
+  .dilemma-label.green { color: var(--green); }
+  .dilemma-label.blue { color: var(--blue); }
+  .dilemma-label.gold { color: var(--gold); }
+
+  /* ── CHOICES ── */
+  .choices {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 16px;
+  }
+  .choice-btn {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 16px 18px;
+    background: white;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s;
+    font-family: 'Noto Sans KR', sans-serif;
+  }
+  .choice-btn:hover {
+    border-color: var(--accent);
+    background: var(--accent-pale);
+    transform: translateX(3px);
+  }
+  .choice-btn.selected {
+    border-color: var(--accent);
+    background: var(--accent-pale);
+  }
+  .choice-num {
+    width: 26px;
+    height: 26px;
+    min-width: 26px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1px;
+  }
+  .choice-text {
+    font-size: 13.5px;
+    color: var(--ink);
+    line-height: 1.65;
+  }
+  .choice-hint {
+    font-size: 11px;
+    color: var(--ink-soft);
+    margin-top: 4px;
+  }
+
+  /* ── RESULT ── */
+  .result-box {
+    margin-top: 16px;
+    padding: 18px 20px;
+    background: var(--cream);
+    border: 1px dashed var(--border);
+    border-radius: 10px;
+    font-size: 13.5px;
+    line-height: 1.8;
+    color: var(--ink);
+    animation: fadeIn 0.5s ease;
+    display: none;
+  }
+  .result-box.visible { display: block; }
+  .result-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    font-weight: 700;
+    color: var(--gold);
+    margin-bottom: 8px;
+    display: block;
+  }
+  .result-effects {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+  }
+  .effect-chip {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 500;
+  }
+  .effect-up { background: #D8F3DC; color: #1B5E20; }
+  .effect-down { background: #FFEBEE; color: #B71C1C; }
+  .effect-neutral { background: #E3F2FD; color: #0D47A1; }
+
+  .next-btn {
+    width: 100%;
+    margin-top: 16px;
+    padding: 14px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    font-family: 'Noto Sans KR', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: none;
+    letter-spacing: 0.5px;
+  }
+  .next-btn.visible { display: block; }
+  .next-btn:hover { background: #A0350A; transform: translateY(-1px); }
+  .next-btn.green-btn { background: var(--green); }
+  .next-btn.green-btn:hover { background: #1B4D37; }
+  .next-btn.blue-btn { background: var(--blue); }
+  .next-btn.blue-btn:hover { background: #0D2440; }
+
+  /* ── ENDING ── */
+  .ending-card {
+    background: var(--paper);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 40px 32px;
+    text-align: center;
+    box-shadow: var(--shadow);
+    animation: slideUp 0.5s ease;
+    display: none;
+  }
+  .ending-card.visible { display: block; }
+  .ending-flower { font-size: 72px; margin-bottom: 20px; display: block; animation: bloom 1s ease; }
+  .ending-title {
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--ink);
+    margin-bottom: 12px;
+  }
+  .ending-grade {
+    display: inline-block;
+    padding: 6px 20px;
+    border-radius: 30px;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 20px;
+  }
+  .grade-excellent { background: var(--gold-pale); color: var(--gold); border: 1px solid var(--gold); }
+  .grade-good { background: var(--green-pale); color: var(--green); border: 1px solid var(--green); }
+  .grade-try { background: var(--blue-pale); color: var(--blue); border: 1px solid var(--blue); }
+
+  .ending-message {
+    font-size: 14px;
+    line-height: 1.9;
+    color: var(--ink-soft);
+    margin-bottom: 24px;
+    text-align: left;
+  }
+
+  .letter-card {
+    background: var(--accent-pale);
+    border: 1px solid rgba(200,68,10,0.15);
+    border-radius: 12px;
+    padding: 20px 24px;
+    text-align: left;
+    margin: 20px 0;
+    font-size: 13.5px;
+    line-height: 1.9;
+    color: var(--ink);
+    font-family: 'Nanum Myeongjo', serif;
+    position: relative;
+  }
+  .letter-card::before {
+    content: '❝';
+    position: absolute;
+    top: -8px; left: 16px;
+    font-size: 28px;
+    color: var(--accent);
+  }
+  .letter-author {
+    margin-top: 12px;
+    font-size: 12px;
+    text-align: right;
+    color: var(--ink-soft);
+  }
+
+  .stat-summary {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin: 20px 0;
+  }
+  .stat-summary-item {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
+    text-align: center;
+  }
+  .stat-summary-icon { font-size: 24px; display: block; margin-bottom: 6px; }
+  .stat-summary-label { font-size: 11px; color: var(--ink-soft); display: block; }
+  .stat-summary-val { font-size: 20px; font-weight: 700; font-family: 'Nanum Myeongjo', serif; color: var(--ink); }
+
+  .restart-btn {
+    padding: 14px 40px;
+    background: var(--ink);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    font-family: 'Noto Sans KR', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 8px;
+  }
+  .restart-btn:hover { background: var(--accent); transform: translateY(-2px); }
+
+  /* ── INTRO ── */
+  .intro-card {
+    background: var(--paper);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 36px 32px;
+    text-align: center;
+    box-shadow: var(--shadow);
+    margin-top: 20px;
+  }
+  .intro-icon { font-size: 64px; display: block; margin-bottom: 20px; }
+  .intro-title {
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--ink);
+    margin-bottom: 14px;
+  }
+  .intro-text {
+    font-size: 13.5px;
+    line-height: 1.9;
+    color: var(--ink-soft);
+    margin-bottom: 24px;
+    text-align: left;
+  }
+  .intro-list {
+    background: var(--cream);
+    border-radius: 10px;
+    padding: 16px 20px;
+    text-align: left;
+    margin-bottom: 24px;
+    list-style: none;
+  }
+  .intro-list li {
+    font-size: 13px;
+    color: var(--ink-soft);
+    padding: 5px 0;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .intro-list li:last-child { border-bottom: none; }
+  .start-btn {
+    width: 100%;
+    padding: 16px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 700;
+    font-family: 'Noto Sans KR', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 1px;
+  }
+  .start-btn:hover { background: #A0350A; transform: translateY(-2px); box-shadow: 0 4px 16px rgba(200,68,10,0.3); }
+
+  /* ── THOUGHT BUBBLE ── */
+  .thought-bubble {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin: 12px 0;
+    font-size: 12.5px;
+    color: var(--ink-soft);
+    font-style: italic;
+    line-height: 1.7;
+    position: relative;
+  }
+  .thought-bubble::before {
+    content: '💭';
+    margin-right: 6px;
+    font-style: normal;
+  }
+
+  /* ── TASK LIST ── */
+  .task-progress {
+    background: var(--paper);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin: 12px 0;
+    font-size: 12px;
+  }
+  .task-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 3px 0;
+  }
+  .task-name { color: var(--ink-soft); }
+  .task-done { color: var(--green); font-weight: 500; }
+  .task-pending { color: var(--ink-soft); opacity: 0.5; }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes bloom {
+    0% { transform: scale(0.3) rotate(-20deg); opacity: 0; }
+    70% { transform: scale(1.15) rotate(5deg); }
+    100% { transform: scale(1) rotate(0deg); opacity: 1; }
+  }
+
+  @media (max-width: 480px) {
+    .scene-card { padding: 20px 18px; }
+    .status-bar { grid-template-columns: repeat(2, 1fr); }
+    .stat-summary { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div id="game-container">
+  <div class="game-header">
+    <div class="header-eyebrow">스승의 날 특별판</div>
+    <h1 class="header-title">선생님이 되어보는 하루</h1>
+    <p class="header-sub">초등학교 4학년 2반 담임선생님으로 하루를 보내보세요</p>
+  </div>
+
+  <div id="intro-section">
+    <div class="intro-card">
+      <span class="intro-icon">🎒</span>
+      <h2 class="intro-title">오늘 하루, 선생님이 되어볼 준비가 됐나요?</h2>
+      <p class="intro-text">
+        오늘은 5월 15일, 스승의 날입니다.<br><br>
+        여러분은 한솔초등학교 4학년 2반 담임선생님입니다.
+        아이들 27명을 가르치면서 하루에 얼마나 많은 일들이 일어나는지 직접 경험해 보세요.
+        수업, 행정 업무, 생활 지도, 학부모 상담, 교직원 회의… 선생님의 하루는 쉬운 선택들이 많지 않답니다.
+      </p>
+      <ul class="intro-list">
+        <li>📚 <span>수업 준비부터 마무리까지, 진짜 선생님의 하루</span></li>
+        <li>🤔 <span>쉽지 않은 딜레마 상황들이 펼쳐집니다</span></li>
+        <li>⚡ <span>여러분의 선택이 학급과 선생님의 하루를 바꿉니다</span></li>
+        <li>💝 <span>아이들의 감사가 모든 피로를 녹여준다는 사실도요</span></li>
+      </ul>
+      <p class="intro-text" style="font-size:12.5px; color:var(--ink-soft); margin-bottom:16px;">
+        ※ 게임 속 선생님의 에너지, 학생 신뢰도, 학부모 관계, 행정 처리 능력을 잘 관리하며 하루를 완성하세요!
+      </p>
+      <button class="start-btn" onclick="startGame()">▶  선생님의 하루 시작하기</button>
+    </div>
+  </div>
+
+  <div id="status-section" style="display:none;">
+    <div class="status-bar">
+      <div class="stat-item">
+        <span class="stat-label">에너지</span>
+        <span class="stat-value" id="stat-energy">100</span>
+        <div class="stat-bar-wrap"><div class="stat-bar-fill fill-energy" id="bar-energy" style="width:100%"></div></div>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">학생 신뢰</span>
+        <span class="stat-value" id="stat-student">60</span>
+        <div class="stat-bar-wrap"><div class="stat-bar-fill fill-student" id="bar-student" style="width:60%"></div></div>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">학부모 관계</span>
+        <span class="stat-value" id="stat-parent">60</span>
+        <div class="stat-bar-wrap"><div class="stat-bar-fill fill-parent" id="bar-parent" style="width:60%"></div></div>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">행정 처리</span>
+        <span class="stat-value" id="stat-admin">60</span>
+        <div class="stat-bar-wrap"><div class="stat-bar-fill fill-admin" id="bar-admin" style="width:60%"></div></div>
+      </div>
+    </div>
+
+    <div class="timeline" id="timeline">
+      <!-- filled by JS -->
+    </div>
+
+    <div class="task-progress" id="task-progress"></div>
+  </div>
+
+  <div id="scene-section"></div>
+  <div id="ending-section"></div>
+</div>
+
+<script>
+// ── GAME STATE ──
+const state = {
+  energy: 100,
+  student: 60,
+  parent: 60,
+  admin: 60,
+  phase: 0,
+  choices: [],
+  tasks: {
+    '출결 확인': false,
+    '수업 (국어)': false,
+    '수업 (수학)': false,
+    '생활 지도': false,
+    '학부모 상담': false,
+    '교직원 회의': false,
+    '생기부 작성': false,
+    '행정 업무': false,
+    '연수 수강': false,
+  }
+};
+
+const timeline_slots = [
+  { time: '07:30', label: '등교 전', icon: '🌅' },
+  { time: '08:30', label: '아침 조회', icon: '📋' },
+  { time: '09:00', label: '1·2교시', icon: '📚' },
+  { time: '10:50', label: '쉬는 시간', icon: '🏃' },
+  { time: '11:10', label: '3·4교시', icon: '📐' },
+  { time: '12:30', label: '점심 시간', icon: '🍱' },
+  { time: '13:30', label: '5교시', icon: '🖥️' },
+  { time: '14:30', label: '방과 후', icon: '🌇' },
+  { time: '16:00', label: '마무리', icon: '✏️' },
+];
+
+// ── SCENES DEFINITION ──
+const scenes = [
+  // SCENE 0: 등교 전 아침 준비
+  {
+    phase: '오전 7시 30분 — 출근 전',
+    phaseColor: '',
+    theme: '',
+    title: '오늘의 할 일 목록',
+    emoji: '📋',
+    body: `학교에 도착했습니다. 오늘 하루 해야 할 일들이 머릿속을 가득 채웁니다.\n\n오늘 수업 준비, 생활기록부 작성 마감(오늘!), 오후 4시 교직원 회의, 학부모 전화 상담 예약 3건… 그런데 방금 교감 선생님께서 오늘 오전 중으로 체험학습 계획서를 제출해야 한다는 공문을 추가로 보내셨습니다.`,
+    dilemma: `⏰ 시간이 없습니다! 출근하자마자 무엇부터 시작할까요?\n수업 준비를 먼저 하면 아이들에게는 좋지만 공문이 늦어질 수 있고, 공문을 먼저 처리하면 수업이 부실해질 수 있습니다.`,
+    dilemmaColor: '',
+    tasksDone: [],
+    choices: [
+      {
+        text: '수업 준비를 먼저 한다. 아이들 수업이 가장 중요하니까.',
+        hint: '아이들을 위해 수업의 질을 지킨다.',
+        effects: { energy: -5, student: +10, admin: -10 },
+        result: '정성 들여 준비한 국어 수업 자료를 만들었습니다. 아이들이 오늘 수업에서 눈을 반짝일 모습이 그려집니다. 하지만 체험학습 계획서를 점심 이후에야 제출해 교감 선생님께 주의를 들었습니다.',
+        resultEffects: ['학생 신뢰 +10', '행정 처리 -10', '에너지 -5'],
+        effectTypes: ['up', 'down', 'neutral'],
+      },
+      {
+        text: '공문과 행정업무를 먼저 처리한다. 마감이 있으니까.',
+        hint: '학교 행정은 기한이 있다.',
+        effects: { energy: -8, student: -5, admin: +12 },
+        result: '체험학습 계획서를 오전 중으로 제출했습니다. 교감 선생님께 칭찬을 들었지만, 수업 준비가 부족해 1교시에 즉흥으로 진행하다 보니 아이들의 반응이 평소보다 조금 떨어졌습니다.',
+        resultEffects: ['행정 처리 +12', '학생 신뢰 -5', '에너지 -8'],
+        effectTypes: ['up', 'down', 'down'],
+      },
+      {
+        text: '두 가지를 동시에 한다. 수업 자료 만들면서 틈틈이 공문도.',
+        hint: '선생님의 멀티태스킹 능력을 발휘!',
+        effects: { energy: -15, student: +3, admin: +5 },
+        result: '둘 다 해냈습니다! 하지만 집중력이 분산되어 수업 자료도, 공문도 완벽하지 않았습니다. 그리고 아침부터 에너지를 많이 썼네요. 오늘 하루가 걱정됩니다.',
+        resultEffects: ['에너지 -15', '학생 신뢰 +3', '행정 처리 +5'],
+        effectTypes: ['down', 'up', 'up'],
+      },
+    ],
+    nextLabel: '아침 조회 시간으로 →',
+    nextColor: '',
+    timelineIndex: 0,
+  },
+
+  // SCENE 1: 아침 조회
+  {
+    phase: '오전 8시 30분 — 아침 조회',
+    phaseColor: '',
+    theme: '',
+    title: '지수가 눈물을 글썽이고 있어요',
+    emoji: '😢',
+    body: `아침 조회 시간, 27명의 아이들이 자리에 앉았습니다. 그런데 2번 자리 지수가 고개를 숙이고 훌쩍이고 있습니다. 옆에 앉은 친구들은 어색한 표정으로 눈치를 보고 있어요.\n\n동시에 오늘 건강 조사 앱에 아직 14명이 입력을 안 했고, 오늘 가정통신문도 나누어줘야 합니다. 조회 시간은 10분입니다.`,
+    dilemma: `💬 지수에게 바로 다가가야 할까요, 아니면 조회 업무를 먼저 마치고 나중에 따로 이야기해야 할까요?`,
+    dilemmaColor: '',
+    tasksDone: [],
+    choices: [
+      {
+        text: '지금 바로 지수에게 조용히 다가가 "괜찮아?" 하고 물어본다.',
+        hint: '아이의 마음이 먼저다.',
+        effects: { energy: -3, student: +15, admin: -5 },
+        result: '"선생님이 알아봐줬어요."라고 지수가 나중에 일기에 썼습니다. 친구와 다툰 것 때문에 속상했던 지수가 마음을 열었고 오전 내내 수업에 집중할 수 있었습니다. 하지만 건강조사 입력은 1교시 끝나고 부랴부랴 챙겨야 했습니다.',
+        resultEffects: ['학생 신뢰 +15', '행정 처리 -5', '에너지 -3'],
+        effectTypes: ['up', 'down', 'neutral'],
+      },
+      {
+        text: '조회 업무를 빠르게 끝내고, 바로 지수에게 간다.',
+        hint: '효율과 배려 사이의 균형.',
+        effects: { energy: -5, student: +8, admin: +5 },
+        result: '2분 만에 가정통신문을 나누고 건강조사 제출도 독려했습니다. 그리고 지수에게 다가가 이야기를 들어주었습니다. 조금 늦었지만 지수도 이해했습니다. 선생님도, 아이도 좋은 아침을 시작했습니다.',
+        resultEffects: ['학생 신뢰 +8', '행정 처리 +5', '에너지 -5'],
+        effectTypes: ['up', 'up', 'neutral'],
+      },
+      {
+        text: '반 전체에게 "다들 지수를 응원해줘요"라고 하며 함께 위로한다.',
+        hint: '학급 공동체 문화를 살린다.',
+        effects: { energy: -4, student: +12, admin: -3 },
+        result: '아이들이 "지수야 괜찮아?"라고 합창했습니다. 지수가 웃음을 되찾았고 반 분위기도 따뜻해졌습니다. 다만 오늘의 조회 업무는 살짝 늦어졌습니다. 그래도 이런 경험이 아이들에게는 더 큰 배움이 될 수 있을까요?',
+        resultEffects: ['학생 신뢰 +12', '행정 처리 -3', '에너지 -4'],
+        effectTypes: ['up', 'down', 'neutral'],
+      },
+    ],
+    nextLabel: '1·2교시 수업으로 →',
+    nextColor: '',
+    timelineIndex: 1,
+    tasksDone: ['출결 확인'],
+  },
+
+  // SCENE 2: 국어 수업
+  {
+    phase: '오전 9시 00분 — 1·2교시 국어 수업',
+    phaseColor: '',
+    theme: '',
+    title: '수업 중, 준호가 또 딴짓을!',
+    emoji: '📖',
+    body: `국어 시간에 모둠별 토론 활동을 하고 있습니다. 대부분의 아이들이 열심히 참여하는데, 준호가 책상 밑에서 스마트폰을 하고 있습니다. 옆 모둠 아이들이 이미 눈치챘고, 수군거리기 시작합니다.\n\n준호는 학교에 스마트폰을 가져오면 안 된다는 규칙을 알면서도 자주 이런 일이 있었습니다. 준호 어머니는 최근 연락하기가 다소 어렵습니다.`,
+    dilemma: `📱 지금 수업 중에 바로 지적하면 준호가 창피를 느낄 수 있고, 분위기가 흐트러질 수 있습니다. 하지만 모른 척하면 다른 아이들이 불공평하다고 느낄 수 있어요.`,
+    dilemmaColor: '',
+    tasksDone: [],
+    choices: [
+      {
+        text: '수업을 잠깐 멈추고 준호에게 조용히 다가가 스마트폰을 걷는다.',
+        hint: '규칙은 지켜져야 한다.',
+        effects: { energy: -6, student: +8, admin: +5 },
+        result: '준호는 고개를 숙였지만 선생님이 반 전체 앞에서 창피를 주지 않은 것에 고마워했습니다. 다른 아이들도 "역시 선생님은 공평해"라고 생각했습니다. 수업이 잠깐 멈췄지만 금방 다시 집중됐습니다.',
+        resultEffects: ['학생 신뢰 +8', '행정 처리 +5', '에너지 -6'],
+        effectTypes: ['up', 'up', 'down'],
+      },
+      {
+        text: '지금은 모른 척하고, 쉬는 시간에 따로 이야기한다.',
+        hint: '수업 흐름을 지킨다.',
+        effects: { energy: -5, student: +5, admin: 0 },
+        result: '수업은 잘 마쳤습니다. 쉬는 시간에 준호를 불러 따뜻하게 이야기했고, 준호가 왜 스마트폰을 꺼내게 됐는지 이유를 들었습니다. 집에서 힘든 일이 있었다고 했습니다. 더 깊은 대화가 필요한 상황이었습니다.',
+        resultEffects: ['학생 신뢰 +5', '에너지 -5'],
+        effectTypes: ['up', 'neutral'],
+      },
+      {
+        text: '토론 주제를 스마트폰의 장단점으로 바꿔 수업으로 자연스럽게 이어간다.',
+        hint: '위기를 수업으로 전환한다.',
+        effects: { energy: -8, student: +15, admin: -3 },
+        result: '아이들이 "우와!" 하며 신기해했습니다. 갑자기 토론이 뜨거워졌습니다. 준호도 스마트폰을 넣고 토론에 참여했습니다. 오늘 최고의 수업이 됐지만, 원래 수업 계획은 완전히 버려야 했습니다.',
+        resultEffects: ['학생 신뢰 +15', '에너지 -8', '행정 처리 -3'],
+        effectTypes: ['up', 'down', 'down'],
+      },
+    ],
+    nextLabel: '쉬는 시간으로 →',
+    nextColor: '',
+    timelineIndex: 2,
+    tasksDone: ['수업 (국어)'],
+  },
+
+  // SCENE 3: 쉬는 시간
+  {
+    phase: '오전 10시 50분 — 쉬는 시간 10분',
+    phaseColor: 'green',
+    theme: 'green-theme',
+    title: '쉬는 시간에도 선생님은 바쁘다',
+    emoji: '⏱️',
+    body: `10분 쉬는 시간입니다. 하지만 선생님에게 쉬는 시간은 없습니다.\n\n① 3교시 수학 수업 준비를 해야 합니다 (자료 출력 필요)\n② 학부모 상담 예약 문자 답장이 3개 와 있습니다\n③ 민준이와 서아가 싸웠는지 둘 다 교실에 남아 서로 등을 지고 앉아 있습니다\n④ 직원실에서 교육청 공문 처리 요청이 왔습니다`,
+    dilemma: `⏰ 10분 안에 이 모든 걸 할 수는 없습니다. 지금 당장 무엇에 집중할까요?`,
+    dilemmaColor: 'green',
+    tasksDone: [],
+    choices: [
+      {
+        text: '민준이와 서아 사이를 중재한다. 다음 수업에 둘 다 집중 못 하면 수업이 힘들어진다.',
+        hint: '아이들의 감정 문제를 먼저 해결.',
+        effects: { energy: -7, student: +12, admin: -5 },
+        result: '두 아이 사이에서 각자의 이야기를 들었습니다. 알고 보니 작은 오해였습니다. 10분이 부족했지만 두 아이가 악수하고 3교시를 함께 시작할 수 있었습니다. 수학 자료는 4교시 전에 부랴부랴 출력했습니다.',
+        resultEffects: ['학생 신뢰 +12', '행정 처리 -5', '에너지 -7'],
+        effectTypes: ['up', 'down', 'down'],
+      },
+      {
+        text: '수학 자료를 먼저 출력하고 돌아와서 나머지를 처리한다.',
+        hint: '다음 수업 준비가 우선.',
+        effects: { energy: -5, student: +3, admin: +8 },
+        result: '3교시 수학 수업 자료를 출력했습니다. 학부모 문자 중 한 건은 내일로 미뤘습니다. 민준이와 서아 문제는 점심 시간에 해결했습니다. 아이들이 수학 시간에 준비된 자료로 잘 공부했습니다.',
+        resultEffects: ['행정 처리 +8', '학생 신뢰 +3', '에너지 -5'],
+        effectTypes: ['up', 'up', 'neutral'],
+      },
+      {
+        text: '학부모 문자에 간단히 답장한다. 오래 기다리시면 섭섭해할 수 있다.',
+        hint: '학부모 소통을 빠르게.',
+        effects: { energy: -4, student: 0, parent: +10, admin: 0 },
+        result: '세 분의 학부모님께 간단히 답장했습니다. 한 분이 "빠른 답변 감사합니다"라고 다시 문자를 보내셨습니다. 하지만 수학 자료는 못 준비했고, 두 아이의 갈등은 점심까지 이어졌습니다.',
+        resultEffects: ['학부모 관계 +10', '에너지 -4'],
+        effectTypes: ['up', 'neutral'],
+      },
+    ],
+    nextLabel: '3·4교시 수학 수업으로 →',
+    nextColor: 'green-btn',
+    timelineIndex: 3,
+    tasksDone: [],
+  },
+
+  // SCENE 4: 수학 수업 + 연수
+  {
+    phase: '오전 11시 10분 — 3·4교시 + 연수',
+    phaseColor: 'green',
+    theme: 'green-theme',
+    title: '수업 중 갑자기 찾아온 연수 알림',
+    emoji: '📐',
+    body: `수학 시간, 아이들이 분수 계산을 연습하고 있습니다. 그런데 선생님 핸드폰에 알림이 왔습니다.\n\n"오늘 오전 11시 30분, 필수 직무 연수 온라인 강의가 시작됩니다. 연수 이수 기한: 오늘까지. 미이수 시 불이익이 있을 수 있습니다."\n\n아뿔싸! 깜빡했습니다. 연수는 2시간짜리입니다. 지금 수업은 12시 10분에 끝납니다.`,
+    dilemma: `😰 수업을 하면서 동시에 연수를 들을 수는 없습니다. 오늘 연수를 이수하지 못하면 불이익이 생길 수 있습니다. 어떻게 할까요?`,
+    dilemmaColor: 'green',
+    tasksDone: [],
+    choices: [
+      {
+        text: '수업에 집중하고, 점심시간과 방과후를 이용해 연수를 듣는다.',
+        hint: '지금 이 순간 아이들이 먼저다.',
+        effects: { energy: -12, student: +8, admin: -5 },
+        result: '수업을 잘 마쳤습니다. 점심을 못 먹으면서 1시간, 방과후 남아서 1시간 연수를 완료했습니다. 배가 고프고 피곤했지만 연수도, 수업도 지켰습니다. 오늘 정말 힘든 하루네요.',
+        resultEffects: ['학생 신뢰 +8', '에너지 -12', '행정 처리 -5'],
+        effectTypes: ['up', 'down', 'neutral'],
+      },
+      {
+        text: '아이들에게 자습 과제를 주고, 조용히 연수 영상을 틀어둔다.',
+        hint: '두 가지를 어떻게든 해결하려 한다.',
+        effects: { energy: -8, student: -10, admin: +5 },
+        result: '아이들은 어리둥절했지만 과제를 했습니다. 연수도 이어폰으로 들었지만 제대로 이해하지 못했습니다. 수업도 연수도 어정쩡하게 됐습니다. 아이들이 "선생님이 오늘 이상했어요"라고 했습니다.',
+        resultEffects: ['행정 처리 +5', '학생 신뢰 -10', '에너지 -8'],
+        effectTypes: ['up', 'down', 'down'],
+      },
+      {
+        text: '옆 반 선생님께 잠깐 부탁하고, 연수를 먼저 처리한 후 돌아온다.',
+        hint: '동료 선생님의 도움을 요청한다.',
+        effects: { energy: -6, student: +2, admin: +10, parent: -3 },
+        result: '옆 반 박 선생님이 흔쾌히 도와주셨습니다. 선생님들은 서로 도움을 주고받으며 살아갑니다. 연수를 40분만에 핵심만 이수하고 돌아왔습니다. 아이들은 괜찮았지만 연수 내용이 다소 빠른 감이 있었습니다.',
+        resultEffects: ['행정 처리 +10', '학생 신뢰 +2', '에너지 -6'],
+        effectTypes: ['up', 'up', 'neutral'],
+      },
+    ],
+    nextLabel: '점심 시간으로 →',
+    nextColor: 'green-btn',
+    timelineIndex: 4,
+    tasksDone: ['수업 (수학)'],
+  },
+
+  // SCENE 5: 점심 + 학부모 상담
+  {
+    phase: '낮 12시 30분 — 점심 시간',
+    phaseColor: 'blue',
+    theme: 'blue-theme',
+    title: '점심도 못 먹는 선생님의 상담 시간',
+    emoji: '📞',
+    body: `급식실에서 아이들 급식 지도를 마치고 선생님 자리로 돌아왔습니다. 이제 30분의 여유가 생겼습니다.\n\n예약된 학부모 전화 상담이 있습니다. 오늘 상담 예약자는 3명인데, 점심 시간 30분 안에 세 분을 다 모시기는 어렵습니다.\n\n① 동준이 어머니: 아이가 학교에서 재미없다고 한다며 걱정\n② 수빈이 아버지: 학교폭력 관련 문의 (친구에게 놀림을 당했다고)\n③ 하은이 어머니: 생활기록부 특기사항 관련 문의`,
+    dilemma: `📞 누구를 먼저 상담할까요? 우선순위를 잘 골라야 합니다. 수빈이 건은 학교폭력으로 번질 수 있어 민감하고, 하은이 어머니는 오래 기다리셨습니다.`,
+    dilemmaColor: 'blue',
+    tasksDone: [],
+    choices: [
+      {
+        text: '수빈이 아버지를 가장 먼저 상담한다. 학교폭력 관련은 빠른 대응이 필요하다.',
+        hint: '긴급도 높은 건을 우선.',
+        effects: { energy: -10, student: +8, parent: +12, admin: +5 },
+        result: '수빈이 아버지의 걱정을 잘 들어드렸습니다. 알고 보니 지속적인 놀림이 아니라 한 번의 해프닝이었습니다. 선생님이 신속하게 확인하고 연락드리자 아버지도 안심하셨습니다. 나머지 두 분은 내일 상담으로 조율했습니다.',
+        resultEffects: ['학부모 관계 +12', '학생 신뢰 +8', '행정 처리 +5', '에너지 -10'],
+        effectTypes: ['up', 'up', 'up', 'down'],
+      },
+      {
+        text: '하은이 어머니를 먼저 연락드린다. 가장 오래 기다리셨으니까.',
+        hint: '기다린 순서를 지킨다.',
+        effects: { energy: -8, parent: +5, admin: +5 },
+        result: '하은이 어머니와 생기부 상담을 15분간 했습니다. 어머니가 만족하셨습니다. 수빈이 아버지 상담은 내일로 미뤄졌는데, 아버지가 조금 서운해하셨습니다. "학교폭력인데 왜 바로 연락이 없느냐"는 말씀을 하셨습니다.',
+        resultEffects: ['학부모 관계 +5', '행정 처리 +5', '에너지 -8'],
+        effectTypes: ['up', 'up', 'down'],
+      },
+      {
+        text: '세 분 모두에게 짧게 문자로 상황을 알리고, 내일 더 자세히 상담하자고 한다.',
+        hint: '모든 분께 동등하게 소통한다.',
+        effects: { energy: -5, parent: +8, admin: +3 },
+        result: '세 분 모두에게 정중한 문자를 보냈습니다. 동준이 어머니, 하은이 어머니는 이해하셨습니다. 수빈이 아버지는 조금 걱정되셨지만 "학교에서 확인 중이다"는 말에 안심하셨습니다. 점심은 결국 못 먹었습니다.',
+        resultEffects: ['학부모 관계 +8', '행정 처리 +3', '에너지 -5'],
+        effectTypes: ['up', 'up', 'neutral'],
+      },
+    ],
+    nextLabel: '5교시 수업으로 →',
+    nextColor: 'blue-btn',
+    timelineIndex: 5,
+    tasksDone: ['학부모 상담'],
+  },
+
+  // SCENE 6: 5교시 체육 + 생기부
+  {
+    phase: '오후 1시 30분 — 5교시',
+    phaseColor: 'blue',
+    theme: 'blue-theme',
+    title: '수업 vs 생기부 마감 vs 출장 준비',
+    emoji: '🏃',
+    body: `5교시는 체육 시간입니다. 운동장에서 줄넘기 수업을 해야 합니다. 그런데 오늘은 두 가지 일이 겹쳤습니다.\n\n① 생활기록부 초안 마감이 오늘 오후 3시입니다 (아직 8명분을 못 썼습니다)\n② 교육청 출장이 내일인데 출장 보고서 초안을 오늘 중으로 제출해야 합니다\n\n체육 수업을 빠지면 아이들이 실망하고, 운동장 안전 지도도 공백이 생깁니다.`,
+    dilemma: `📝 오늘 마감이 두 개나 있습니다. 5교시 수업을 어떻게 조율할까요?`,
+    dilemmaColor: 'blue',
+    tasksDone: [],
+    choices: [
+      {
+        text: '체육 수업은 반드시 진행한다. 아이들과의 약속이 먼저다.',
+        hint: '아이들과 함께 운동장으로 나간다.',
+        effects: { energy: -10, student: +15, admin: -10 },
+        result: '줄넘기 수업을 신나게 했습니다. 아이들이 오늘 수업 최고라고 했습니다. 하지만 생기부 8명분과 출장 보고서는 방과후에 남아서 쓰게 됐습니다. 퇴근은 밤이 될 것 같습니다.',
+        resultEffects: ['학생 신뢰 +15', '행정 처리 -10', '에너지 -10'],
+        effectTypes: ['up', 'down', 'down'],
+      },
+      {
+        text: '체육 전담 선생님께 오늘 수업을 부탁하고, 교실에서 마감 업무를 처리한다.',
+        hint: '교내 협업으로 위기 탈출.',
+        effects: { energy: -7, student: -3, admin: +12 },
+        result: '전담 선생님이 어렵게 도와주셨습니다. 생기부 7명분을 완료하고 출장 보고서 초안도 제출했습니다. 아이들이 "선생님 왜 안 오셨어요?"라고 물었습니다. 솔직하게 "선생님이 서류 작업이 너무 많았어"라고 설명해 주었습니다.',
+        resultEffects: ['행정 처리 +12', '학생 신뢰 -3', '에너지 -7'],
+        effectTypes: ['up', 'down', 'neutral'],
+      },
+      {
+        text: '체육 수업 중 아이들은 자유롭게 하게 하고, 선생님은 운동장에서 태블릿으로 생기부를 작성한다.',
+        hint: '감시하면서 업무도 처리한다.',
+        effects: { energy: -9, student: -8, admin: +5 },
+        result: '생기부를 조금 썼지만 집중이 안 됐습니다. 그 사이에 아이들이 다소 산만해졌습니다. 선우가 넘어져서 무릎을 긁혔습니다. 크게 다친 건 아니지만 마음이 무거워졌습니다.',
+        resultEffects: ['에너지 -9', '학생 신뢰 -8', '행정 처리 +5'],
+        effectTypes: ['down', 'down', 'up'],
+      },
+    ],
+    nextLabel: '교직원 회의로 →',
+    nextColor: 'blue-btn',
+    timelineIndex: 6,
+    tasksDone: ['생기부 작성', '수업 (국어)'],
+  },
+
+  // SCENE 7: 교직원 회의
+  {
+    phase: '오후 4시 00분 — 교직원 회의',
+    phaseColor: 'gold',
+    theme: 'gold-theme',
+    title: '교직원 회의에서 터진 의견 충돌',
+    emoji: '🏫',
+    body: `오후 4시, 교직원 회의가 시작됐습니다. 선생님은 이미 지쳐 있지만 오늘 중요한 안건이 있습니다.\n\n"내년 학교 교육과정 재구성 방향"에 대한 논의입니다. 교감 선생님은 학력 중심 교육과정을 제안했고, 4학년 다른 반 최 선생님은 체험 중심 교육과정을 강력히 주장하고 있습니다. 의견이 팽팽합니다.\n\n선생님에게도 의견을 물어봤습니다. 선생님은 두 의견 다 장단점이 있다고 생각합니다.`,
+    dilemma: `🗣️ 어떻게 발언할까요? 교감 선생님 편을 들면 최 선생님과 멀어질 수 있고, 최 선생님 편을 들면 교감 선생님이 섭섭해할 수 있습니다.`,
+    dilemmaColor: 'gold',
+    tasksDone: [],
+    choices: [
+      {
+        text: '"두 가지를 절충하는 방안을 제안해 볼 수 있을까요? 학기별로 분기하는 방식은 어떨까요?"',
+        hint: '중재안을 제안한다.',
+        effects: { energy: -8, admin: +10, parent: +5 },
+        result: '처음엔 조용했지만 몇 분이 "오, 그 방법 좋은데요"라고 했습니다. 결국 두 가지를 학기에 따라 나누는 방식으로 합의가 됐습니다. 선생님이 오늘 회의의 해결사가 됐습니다.',
+        resultEffects: ['행정 처리 +10', '학부모 관계 +5', '에너지 -8'],
+        effectTypes: ['up', 'up', 'down'],
+      },
+      {
+        text: '"저는 체험 중심 교육이 아이들에게 더 좋다고 생각합니다"라고 솔직하게 말한다.',
+        hint: '자신의 교육 철학을 말한다.',
+        effects: { energy: -6, student: +8, admin: -3 },
+        result: '최 선생님이 고마워했고, 몇몇 선생님이 동의했습니다. 교감 선생님이 살짝 아쉬운 표정이었지만 다수 의견으로 체험 중심 쪽으로 기울었습니다. 오늘 회의가 길어졌습니다.',
+        resultEffects: ['학생 신뢰 +8', '에너지 -6', '행정 처리 -3'],
+        effectTypes: ['up', 'neutral', 'down'],
+      },
+      {
+        text: '"저는 교감 선생님 말씀이 맞다고 생각합니다"라고 한다.',
+        hint: '상급자 의견을 지지한다.',
+        effects: { energy: -5, admin: +5, student: -5 },
+        result: '교감 선생님이 만족하셨습니다. 하지만 최 선생님이 섭섭해했고, 회의 분위기가 어색해졌습니다. 나중에 최 선생님이 "선생님 본인 생각은 없으세요?"라고 물었습니다.',
+        resultEffects: ['행정 처리 +5', '학생 신뢰 -5', '에너지 -5'],
+        effectTypes: ['up', 'down', 'neutral'],
+      },
+    ],
+    nextLabel: '마무리 업무로 →',
+    nextColor: '',
+    timelineIndex: 7,
+    tasksDone: ['교직원 회의'],
+  },
+
+  // SCENE 8: 마무리
+  {
+    phase: '오후 5시 30분 — 마무리 시간',
+    phaseColor: 'gold',
+    theme: 'gold-theme',
+    title: '퇴근 전, 책상 앞에 앉은 선생님',
+    emoji: '✏️',
+    body: `기나긴 하루가 거의 끝났습니다. 아이들은 이미 하교했고, 교실이 조용합니다.\n\n아직 남은 일이 있습니다:\n• 나머지 생활기록부 마무리\n• 내일 수업 준비\n• 가정통신문 작성\n\n그런데 책상 위에 쪽지가 하나 놓여 있습니다. 접힌 색종이 편지입니다. "선생님께" 라고 쓰여 있습니다.`,
+    dilemma: `💌 쪽지를 먼저 읽을까요, 아니면 남은 업무를 먼저 처리할까요?`,
+    dilemmaColor: 'gold',
+    tasksDone: [],
+    choices: [
+      {
+        text: '먼저 편지를 읽는다.',
+        hint: '선생님도 사람이다.',
+        effects: { energy: +20, student: 0, admin: 0 },
+        result: '편지를 펼쳤습니다.\n\n"선생님, 오늘 제가 울 때 먼저 다가와 주셔서 고마워요. 선생님이 있어서 학교가 좋아요. — 지수"\n\n눈물이 날 것 같았습니다. 피로가 사라지는 것 같았습니다. 남은 업무를 기분 좋게 마무리할 수 있었습니다.',
+        resultEffects: ['에너지 +20 (보람!)', '마음 충전 완료'],
+        effectTypes: ['up', 'up'],
+      },
+      {
+        text: '업무를 먼저 끝내고 쉬면서 읽는다.',
+        hint: '책임을 다 한 뒤에 보상을 누린다.',
+        effects: { energy: -5, admin: +8 },
+        result: '생활기록부와 가정통신문을 마무리했습니다. 한숨을 내쉬고 드디어 편지를 펼쳤습니다.\n\n"선생님, 제가 수학 어려웠는데 쉬는 시간에 설명해 주셔서 이해했어요! 선생님 최고예요! — 태민"\n\n이 맛에 선생님 하는구나, 라는 생각이 들었습니다.',
+        resultEffects: ['행정 처리 +8', '에너지 -5', '마음 보람'],
+        effectTypes: ['up', 'down', 'up'],
+      },
+    ],
+    nextLabel: '오늘 하루를 마칩니다 ✨',
+    nextColor: '',
+    timelineIndex: 8,
+    tasksDone: ['행정 업무', '연수 수강'],
+    isLast: true,
+  },
+];
+
+// ── FUNCTIONS ──
+function updateStats() {
+  document.getElementById('stat-energy').textContent = Math.max(0, Math.min(100, state.energy));
+  document.getElementById('stat-student').textContent = Math.max(0, Math.min(100, state.student));
+  document.getElementById('stat-parent').textContent = Math.max(0, Math.min(100, state.parent));
+  document.getElementById('stat-admin').textContent = Math.max(0, Math.min(100, state.admin));
+
+  document.getElementById('bar-energy').style.width = Math.max(0, Math.min(100, state.energy)) + '%';
+  document.getElementById('bar-student').style.width = Math.max(0, Math.min(100, state.student)) + '%';
+  document.getElementById('bar-parent').style.width = Math.max(0, Math.min(100, state.parent)) + '%';
+  document.getElementById('bar-admin').style.width = Math.max(0, Math.min(100, state.admin)) + '%';
+}
+
+function updateTimeline(activeIndex) {
+  const tl = document.getElementById('timeline');
+  tl.innerHTML = timeline_slots.map((s, i) => {
+    let cls = 'time-block';
+    if (i < activeIndex) cls += ' done';
+    if (i === activeIndex) cls += ' active';
+    return `<div class="${cls}"><span class="time-icon">${i < activeIndex ? '✅' : s.icon}</span>${s.time}<br><span style="font-size:9px">${s.label}</span></div>`;
+  }).join('');
+}
+
+function updateTaskProgress() {
+  const tp = document.getElementById('task-progress');
+  const rows = Object.entries(state.tasks).map(([k, v]) => {
+    return `<div class="task-row"><span class="task-name">${k}</span><span class="${v ? 'task-done' : 'task-pending'}">${v ? '✅ 완료' : '⬜ 대기'}</span></div>`;
+  }).join('');
+  tp.innerHTML = `<div style="font-size:10px;letter-spacing:1.5px;color:var(--gold);font-weight:700;margin-bottom:6px;">오늘의 할 일</div>` + rows;
+}
+
+function startGame() {
+  document.getElementById('intro-section').style.display = 'none';
+  document.getElementById('status-section').style.display = 'block';
+  updateStats();
+  updateTimeline(0);
+  updateTaskProgress();
+  renderScene(0);
+}
+
+let currentScene = 0;
+let selectedChoice = null;
+
+function renderScene(index) {
+  currentScene = index;
+  selectedChoice = null;
+  const s = scenes[index];
+  const sec = document.getElementById('scene-section');
+
+  updateTimeline(s.timelineIndex);
+  if (s.tasksDone) {
+    s.tasksDone.forEach(t => { if (state.tasks.hasOwnProperty(t)) state.tasks[t] = true; });
+    updateTaskProgress();
+  }
+
+  const dilemmaClass = s.dilemmaColor ? `dilemma-box ${s.dilemmaColor}` : 'dilemma-box';
+  const phaseClass = s.phaseColor ? `scene-phase ${s.phaseColor}` : 'scene-phase';
+  const bodyClass = s.phaseColor ? `scene-body ${s.phaseColor}-border` : 'scene-body';
+  const labelClass = s.dilemmaColor ? `dilemma-label ${s.dilemmaColor}` : 'dilemma-label';
+
+  const choicesHTML = s.choices.map((c, i) => `
+    <button class="choice-btn" onclick="selectChoice(${i})" id="choice-${i}">
+      <span class="choice-num">${i+1}</span>
+      <div>
+        <div class="choice-text">${c.text}</div>
+        <div class="choice-hint">${c.hint}</div>
+      </div>
+    </button>
+  `).join('');
+
+  const thoughtHTML = `<div class="thought-bubble">선택에는 정답이 없습니다. 선생님도 매 순간 최선을 다해 판단합니다.</div>`;
+
+  sec.innerHTML = `
+    <div class="scene-card ${s.theme}">
+      <div class="${phaseClass}">${s.phase}</div>
+      <h2 class="scene-title">${s.title}</h2>
+      <span class="scene-illustration">${s.emoji}</span>
+      <div class="${bodyClass}">${s.body.replace(/\n/g,'<br>')}</div>
+      <div class="${dilemmaClass}">
+        <span class="${labelClass}">⚠ 딜레마 상황</span>
+        ${s.dilemma}
+      </div>
+      ${thoughtHTML}
+      <div class="choices">${choicesHTML}</div>
+      <div class="result-box" id="result-box"></div>
+      <button class="next-btn ${s.nextColor || ''}" id="next-btn" onclick="${s.isLast ? 'showEnding()' : 'goNext()'}">
+        ${s.nextLabel}
+      </button>
+    </div>
+  `;
+
+  sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function selectChoice(i) {
+  if (selectedChoice !== null) return;
+  selectedChoice = i;
+
+  const s = scenes[currentScene];
+  const c = s.choices[i];
+
+  document.querySelectorAll('.choice-btn').forEach(btn => {
+    btn.style.opacity = '0.5';
+    btn.style.cursor = 'default';
+  });
+  const selBtn = document.getElementById(`choice-${i}`);
+  selBtn.style.opacity = '1';
+  selBtn.style.borderColor = 'var(--accent)';
+  selBtn.style.background = 'var(--accent-pale)';
+
+  if (c.effects.energy) state.energy = Math.max(0, Math.min(100, state.energy + c.effects.energy));
+  if (c.effects.student) state.student = Math.max(0, Math.min(100, state.student + c.effects.student));
+  if (c.effects.parent) state.parent = Math.max(0, Math.min(100, state.parent + c.effects.parent));
+  if (c.effects.admin) state.admin = Math.max(0, Math.min(100, state.admin + c.effects.admin));
+  updateStats();
+
+  state.choices.push(i);
+
+  const effectChips = c.resultEffects.map((e, idx) =>
+    `<span class="effect-chip effect-${c.effectTypes[idx]}">${e}</span>`
+  ).join('');
+
+  const resultBox = document.getElementById('result-box');
+  resultBox.innerHTML = `
+    <span class="result-label">📣 결과</span>
+    ${c.result.replace(/\n/g,'<br>')}
+    <div class="result-effects">${effectChips}</div>
+  `;
+  resultBox.classList.add('visible');
+
+  const nextBtn = document.getElementById('next-btn');
+  nextBtn.classList.add('visible');
+
+  resultBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function goNext() {
+  renderScene(currentScene + 1);
+}
+
+function showEnding() {
+  document.getElementById('scene-section').style.display = 'none';
+  document.getElementById('status-section').style.display = 'none';
+
+  const totalScore = Math.round((state.energy + state.student + state.parent + state.admin) / 4);
+  let gradeLabel, gradeClass, endingMsg, letterMsg, letterAuthor;
+
+  if (totalScore >= 70) {
+    gradeLabel = '훌륭한 선생님 🏆';
+    gradeClass = 'grade-excellent';
+    endingMsg = `하루가 끝났습니다. 선생님의 책상 위에는 편지들이 쌓여 있습니다. 힘든 하루였지만, 아이들 한 명 한 명을 생각하며 최선을 다한 하루였습니다. 오늘 선생님은 수업도 하고, 상담도 하고, 회의도 하고, 행정 업무도 하고, 아이들의 마음까지 챙겼습니다. 이것이 진짜 선생님의 하루입니다.`;
+    letterMsg = `선생님, 오늘 하루도 저희를 위해 정말 많이 애써 주셨어요. 선생님 덕분에 학교 오는 게 즐거워요. 항상 건강하세요. 선생님 최고예요! 스승의 날 감사합니다 💝`;
+    letterAuthor = '— 4학년 2반 아이들 모두';
+  } else if (totalScore >= 50) {
+    gradeLabel = '열심히 한 선생님 ⭐';
+    gradeClass = 'grade-good';
+    endingMsg = `완벽하진 않았지만, 선생님은 오늘 정말 많은 것을 해냈습니다. 수업도, 상담도, 회의도, 행정 업무도… 하나를 잘 하면 다른 하나가 부족하고, 그게 선생님의 현실입니다. 그래도 아이들은 선생님을 기억합니다.`;
+    letterMsg = `선생님이 오늘 바빠 보였는데, 그래도 우리한테 잘 해주셔서 고마워요. 선생님이 우리를 위해 많이 노력하신다는 거 알아요. 감사합니다!`;
+    letterAuthor = '— 4학년 2반 일동';
+  } else {
+    gradeLabel = '수고하셨어요 🌱';
+    gradeClass = 'grade-try';
+    endingMsg = `오늘 하루는 정말 힘들었습니다. 선생님이라는 직업은 생각보다 훨씬 어렵습니다. 수많은 선택 앞에서 최선을 다하는 것, 그것만으로도 충분합니다. 내일은 더 좋은 하루가 될 거예요.`;
+    letterMsg = `선생님, 힘내세요. 저희가 있잖아요! 우리가 선생님 좋아해요. 파이팅!`;
+    letterAuthor = '— 4학년 2반 아이들';
+  }
+
+  const endSec = document.getElementById('ending-section');
+  endSec.innerHTML = `
+    <div class="ending-card visible">
+      <span class="ending-flower">🌸</span>
+      <h2 class="ending-title">오늘 하루를 마치며</h2>
+      <span class="ending-grade ${gradeClass}">${gradeLabel}</span>
+
+      <div class="stat-summary">
+        <div class="stat-summary-item">
+          <span class="stat-summary-icon">⚡</span>
+          <span class="stat-summary-label">남은 에너지</span>
+          <span class="stat-summary-val">${Math.max(0,state.energy)}점</span>
+        </div>
+        <div class="stat-summary-item">
+          <span class="stat-summary-icon">👧</span>
+          <span class="stat-summary-label">학생 신뢰도</span>
+          <span class="stat-summary-val">${Math.max(0,state.student)}점</span>
+        </div>
+        <div class="stat-summary-item">
+          <span class="stat-summary-icon">👨‍👩‍👧</span>
+          <span class="stat-summary-label">학부모 관계</span>
+          <span class="stat-summary-val">${Math.max(0,state.parent)}점</span>
+        </div>
+        <div class="stat-summary-item">
+          <span class="stat-summary-icon">📋</span>
+          <span class="stat-summary-label">행정 처리</span>
+          <span class="stat-summary-val">${Math.max(0,state.admin)}점</span>
+        </div>
+      </div>
+
+      <p class="ending-message">${endingMsg}</p>
+
+      <div class="letter-card">
+        ${letterMsg}
+        <p class="letter-author">${letterAuthor}</p>
+      </div>
+
+      <div class="dilemma-box" style="margin-top:20px;text-align:left;">
+        <span class="dilemma-label">💡 오늘 선생님이 하신 일들</span>
+        수업 준비, 아침 조회 및 출결 확인, 국어·수학 수업 진행, 생활 지도, 학부모 전화 상담, 교직원 회의 참석, 직무 연수 이수, 생활기록부 작성, 행정 공문 처리, 체험학습 계획서 제출…
+        <br><br>
+        <strong style="color:var(--accent)">이 모든 걸 단 하루에 하셨습니다.</strong><br>
+        선생님들의 하루는 이렇습니다. 감사합니다, 선생님 🌸
+      </div>
+
+      <button class="restart-btn" onclick="restartGame()">🔄 다시 해보기</button>
+    </div>
+  `;
+  endSec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function restartGame() {
+  state.energy = 100;
+  state.student = 60;
+  state.parent = 60;
+  state.admin = 60;
+  state.phase = 0;
+  state.choices = [];
+  Object.keys(state.tasks).forEach(k => state.tasks[k] = false);
+
+  document.getElementById('ending-section').innerHTML = '';
+  document.getElementById('scene-section').innerHTML = '';
+  document.getElementById('scene-section').style.display = 'block';
+  document.getElementById('status-section').style.display = 'block';
+  document.getElementById('intro-section').style.display = 'none';
+
+  updateStats();
+  updateTimeline(0);
+  updateTaskProgress();
+  renderScene(0);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+window.startGame = startGame;
+window.selectChoice = selectChoice;
+window.goNext = goNext;
+window.showEnding = showEnding;
+window.restartGame = restartGame;
+</script>
+</body>
+</html>
