@@ -1173,7 +1173,10 @@ function renderScene(index) {
     </div>
   `;
 
-  sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  window.scrollTo({
+  top: 0,
+  behavior: 'smooth'
+});
 }
 
 function selectChoice(i) {
