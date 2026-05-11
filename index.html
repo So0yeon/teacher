@@ -580,7 +580,21 @@
   <div class="game-header">
     <div class="header-eyebrow">스승의 날 특별판</div>
     <h1 class="header-title">오늘부터 담임입니다</h1>
-    <p class="header-sub">초등학교 5학년 1반 담임선생님으로 하루를 보내보세요</p>
+    <p class="header-sub" id="header-sub">초등학교 5학년 1반 담임선생님으로 하루를 보내보세요</p>
+    <div style="margin-top:20px;">
+      <input 
+        type="text" 
+        id="class-name-input"
+        placeholder="예: 5학년 1반"
+        style="
+          padding:12px 16px;
+          border-radius:10px;
+          border:1px solid #ccc;
+          font-size:14px;
+          width:220px;
+          text-align:center;
+        "
+      >
   </div>
 
   <div id="intro-section">
@@ -643,6 +657,7 @@
 
 <script>
 // ── GAME STATE ──
+let className = "5학년 1반";
 const state = {
   energy: 100,
   student: 60,
@@ -1089,6 +1104,15 @@ function updateTaskProgress() {
 }
 
 function startGame() {
+  const input = document.getElementById('class-name-input');
+
+  if (input.value.trim() !== '') {
+    className = input.value.trim();
+  }
+  
+  document.getElementById('header-sub').innerText =
+  `${className} 담임선생님으로 하루를 보내보세요`;
+
   document.getElementById('intro-section').style.display = 'none';
   document.getElementById('status-section').style.display = 'block';
   updateStats();
